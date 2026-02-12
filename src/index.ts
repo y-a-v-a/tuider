@@ -1,56 +1,37 @@
 #!/usr/bin/env node
+import { Command } from 'commander';
+import { readInput, tokenize } from './parser';
+import { startReader } from './reader';
 
-import { program } from 'commander';
-import * as fs from 'fs';
-import { SpeedReader } from './speedReader';
+const program = new Command();
 
-async function main() {
-  program
-    .name('tuider')
-    .description('Terminal UI Speed Reader - Display text one word at a time using RSVP technique')
-    .version('1.0.0')
-    .argument('[file]', 'markdown file to read')
-    .parse(process.argv);
+program
+  .name('tuider')
+  .description('Terminal speed reader — displays text one word at a time using RSVP')
+  .version('1.0.0')
+  .argument('[file]', 'markdown or text file to read (omit to read from stdin)')
+  .parse(process.argv);
 
-  const filePath = program.args[0];
-  let content: string;
+async function main(): Promise<void> {
+  const args = program.args;
+  const stdinIsTTY = Boolean(process.stdin.isTTY);
 
-  if (filePath) {
-    if (!fs.existsSync(filePath)) {
-      console.error(`Error: File not found: ${filePath}`);
-      process.exit(1);
-    }
-    content = fs.readFileSync(filePath, 'utf-8');
-  } else {
-    if (process.stdin.isTTY) {
-      console.error('Error: No input provided. Pipe content or provide a file path.');
-      console.error('Usage: cat file.md | tuider');
-      console.error('       tuider file.md');
-      process.exit(1);
-    }
-    
-    content = await readStdin();
-  }
-
-  if (!content.trim()) {
-    console.error('Error: Empty input');
+  let text: string;
+  try {
+    text = await readInput(args, stdinIsTTY);
+  } catch (err) {
+    process.stderr.write((err as Error).message + '\n');
     process.exit(1);
   }
 
-  const reader = new SpeedReader(content);
-  reader.start();
+  const words = tokenize(text);
+
+  if (words.length === 0) {
+    process.stderr.write('No words found in input.\n');
+    process.exit(1);
+  }
+
+  await startReader(words, stdinIsTTY);
 }
 
-function readStdin(): Promise<string> {
-  return new Promise((resolve) => {
-    let data = '';
-    process.stdin.setEncoding('utf8');
-    process.stdin.on('data', chunk => data += chunk);
-    process.stdin.on('end', () => resolve(data));
-  });
-}
-
-main().catch(error => {
-  console.error('Fatal error:', error);
-  process.exit(1);
-});
+main();

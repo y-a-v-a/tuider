@@ -7,21 +7,21 @@
     "tuider": "./dist/index.js"
   },
   "scripts": {
-    "build": "tsc",
+    "build": "tsc && node -e \"const fs=require('fs');const f='dist/index.js';const c=fs.readFileSync(f,'utf-8');if(!c.startsWith('#!/usr/bin/env node'))fs.writeFileSync(f,'#!/usr/bin/env node\\n'+c);\" && chmod +x dist/index.js",
     "dev": "tsc -w",
     "start": "node dist/index.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "clean": "rm -rf dist"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "type": "commonjs",
   "dependencies": {
-    "@types/blessed": "^0.1.27",
-    "@types/node": "^25.2.3",
-    "blessed": "^0.1.81",
-    "commander": "^14.0.3",
-    "marked": "^17.0.2",
-    "typescript": "^5.9.3"
+    "commander": "^12.0.0",
+    "marked": "^9.0.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "typescript": "^5.0.0"
   }
 }
