@@ -3,6 +3,7 @@ import * as fs from 'fs';
 import * as readline from 'readline';
 import { calculateOrp } from './orp';
 import { render, initScreen, restoreScreen, handleResize, DisplayState } from './display';
+export { VALID_ORP_COLORS } from './display';
 
 const DEFAULT_WPM = 250;
 const MIN_WPM = 60;
@@ -18,6 +19,7 @@ interface ReaderState {
   paused: boolean;
   done: boolean;
   timer: NodeJS.Timeout | null;
+  orpColor: string;
 }
 
 // Converts words-per-minute into milliseconds-per-word.
@@ -45,7 +47,7 @@ function wordDelay(word: string, wpm: number): number {
 }
 
 function buildDisplayState(state: ReaderState): DisplayState {
-  const { words, index, wpm, paused, done } = state;
+  const { words, index, wpm, paused, done, orpColor } = state;
   const word = done ? '' : words[index];
   const orpIndex = done ? 0 : calculateOrp(word);
   return {
@@ -56,6 +58,7 @@ function buildDisplayState(state: ReaderState): DisplayState {
     wpm,
     paused,
     done,
+    orpColor,
   };
 }
 
@@ -140,7 +143,7 @@ function openTTY(): tty.ReadStream {
  *
  * Resolves when the user quits.
  */
-export function startReader(words: string[], stdinIsTTY: boolean): Promise<void> {
+export function startReader(words: string[], stdinIsTTY: boolean, orpColor: string): Promise<void> {
   return new Promise((resolve) => {
     const state: ReaderState = {
       words,
@@ -149,6 +152,7 @@ export function startReader(words: string[], stdinIsTTY: boolean): Promise<void>
       paused: false,
       done: false,
       timer: null,
+      orpColor,
     };
 
     initScreen();
