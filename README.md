@@ -27,6 +27,10 @@ echo "The quick brown fox jumps" | tuider
 | `r` | Restart from beginning |
 | `q` or `esc` | Quit |
 
+## Example
+
+![tuider reading Sonnet 18](assets/sonnet-18.png)
+
 ## Display
 
 - **Red character** — the Optimal Recognition Point (~30% into the word)
