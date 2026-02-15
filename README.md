@@ -11,7 +11,16 @@ tuider ./examples/sonnet-18.md
 # Pipe plain text
 cat article.txt | tuider
 echo "The quick brown fox jumps" | tuider
+
+# Choose a custom ORP highlight color (default: red)
+tuider -c cyan ./examples/sonnet-18.md
 ```
+
+### Options
+
+| Flag | Description |
+|------|-------------|
+| `-c, --orp-color <color>` | Color of the highlighted recognition point. Choices: `red`, `green`, `yellow`, `blue`, `magenta`, `purple`, `cyan`, `white`, `orange`. Default: `red`. |
 
 ## Keyboard Controls
 
