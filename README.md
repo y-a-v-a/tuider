@@ -65,3 +65,5 @@ node dist/index.js examples/sonnet-18.md
 ## How RSVP works
 
 By displaying one word at a time with the ORP pinned to a fixed screen position, your eye makes zero horizontal movements. This eliminates the saccadic motion that consumes most of your reading time, enabling speeds that feel effortless at 300–500 WPM.
+
+Vincent Bruijn <vebruijn@gmail.com>
